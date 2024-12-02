@@ -31,7 +31,6 @@ def main(file_name):
     The fourth number, 1, also does not appear in the right list.
     The fifth number, 3, appears in the right list three times; the similarity score increases by 9.
     The last number, 3, appears in the right list three times; the similarity score again increases by 9.
-
     """
     first_row = []
     second_row = []
