@@ -38,33 +38,69 @@ def main(file_name):
 
     print(f"Part 1: {part1_count}")
 
-    print(incorrect_manuals)
+    #print(incorrect_manuals)
     part2_count = 0
 
-    for incorrect_pages in incorrect_manuals:
-        done = False
-        while not done:
-            if find_correct_page(incorrect_pages, order_rules):
-                done = True
-            else:
-                # check per position if it is correct
-                for i, incorrect_page in enumerate(incorrect_pages):
-                    if (order_rules[incorrect_page] == []):
-                        incorrect_page = incorrect_page + [incorrect_page.pop(i)]
-                        continue
-                    for x in order_rules[incorrect_page]:
-                        print(i, incorrect_page, order_rules[incorrect_page])
-                        if x not in incorrect_pages[i+1:]:
-                            print(incorrect_pages)
-                            incorrect_pages[i+1], incorrect_pages[i] = incorrect_pages[i], incorrect_pages[i+1]
-                            break
+    #######################################
+    ############### Part 2 ################
+    #######################################
 
 
-    # Check if rule is correct
-    # if not, then pop the element out of the list and put in in the back
-    # keep doing this until the list is correct.
-                
+    def findInvalid(nums,i, rule):
+        v = nums[i]
+        if v not in rule:
+            return -1
+        for j in range(i):
+            if nums[j] in rule[v]:
+                return j
+        return -1
+
+    def mySort(nums, rule, step=0):
+        p=-1
+        for i in range(len(nums)):
+            p = findInvalid(nums, i, rule)
+            if(p!=-1):
+                nums = nums[:p]+[nums[i]]+nums[p:i]+nums[i+1:]
+                break
+        if(p==-1):
+            return nums
+        return mySort(nums, rule, step+1)
+
+    def process(nums, rule):
+        read = set()
+        for n in nums:
+            if n in rule and len(rule[n].intersection(read))>0:
+                return 0
+            read.add(n)
+        return nums[len(nums)//2]
+
+    rule = {}
+
+    with open(file=file_name, mode='r') as f:
+        for l in f:
+            if len(l.strip())==0 or "," in l:
+                continue
+            a,b = [int(x) for x in l.strip().split("|")]
+            if a not in rule:
+                rule[a]=set()
+            rule[a].add(b)
+
+    #print(rule)
+
+    with open(file=file_name, mode='r') as f:
+        for l in f:
+            if len(l.strip())==0 or "|" in l:
+                continue
+            nums= [int(x) for x in l.strip().split(",")]
+            points = process(nums, rule)
+            if points != 0:
+                #already valid
+                continue
+            nums = mySort(nums, rule)
+            part2_count+=process(nums, rule)
+    print(f"Part1: {part2_count}")
+
 
 if __name__ == "__main__":
-    file_name = "test5.txt"
+    file_name = "data5.txt"
     main(file_name=file_name)
