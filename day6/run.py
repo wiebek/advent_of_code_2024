@@ -61,8 +61,7 @@ def main(file_name: str) -> None:
             steps.append(last_step)
 
     print(f"Part1: {len(set(tuple(i) for i in steps)) - 1}")
-    print(steps)
 
 if __name__ == "__main__":
-    file_name = "test6.txt"
+    file_name = "data6.txt"
     main(file_name=file_name)
